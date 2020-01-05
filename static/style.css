@@ -1,0 +1,16 @@
+* {
+  font-family: "Cousine", monospace;
+}
+
+body {
+  background-color: #ff5252;
+  color: whitesmoke;
+  font-size: 3em;
+}
+
+.container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
