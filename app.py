@@ -1,7 +1,7 @@
 import os
-import sys
-import datetime
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
 import logging
 
 #####   Logging   #####
@@ -21,9 +21,12 @@ except KeyError:
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
 
+#####   Database   #####
+db = SQLAlchemy(app)
+ma = Marshmallow(app)
+
 from routes import *
 
 if __name__ == "__main__":
     log.info('Starting Flask Sever.')
-    # app.run(host='0.0.0.0', port=8080, debug=True)
     app.run()

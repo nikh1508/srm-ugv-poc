@@ -1,6 +1,7 @@
 from app import app
 from flask import Flask, request, jsonify, Response, render_template
 import logging
+from db_models import *
 
 log = logging.getLogger(__name__)
 #
@@ -31,7 +32,7 @@ class InvalidUsage(Exception):
         rv['message'] = self.message
         return rv
 
-
+# Get Sensor Data
 @app.route('/api/sensor-data', methods=['GET'])
 def sensorData():
     log.info('Sensor data requested.')
@@ -41,11 +42,64 @@ def sensorData():
     elif sensor == 'compass':
         return jsonify(compass)
 
-
+# Search Suggestions
 @app.route('/api/search', methods=['GET'])
 def searchSuggestions():
     query = request.args.get('query')
+    possible_locations = Location.query.filter(Location.pretty_name.like('%{}%'.format(query))).all()
+    possible_locations = locations_schema.dump(possible_locations)
+    suggestions = []
+    for location in possible_locations:
+        suggestions.append({'id':location['id'], 'pretty_name':location['pretty_name']})
     return jsonify(suggestions)
+
+# Add new location
+@app.route('/api/location', methods=['POST'])
+def add_location():
+    latitude = request.json['latitude']
+    longitude = request.json['longitude']
+    loc_type = request.json['loc_type']
+    pretty_name = request.json['pretty_name']
+    description = request.json['description']
+    # print(latitude, longitude, loc_type, pretty_name, description)
+    new_location = Location(latitude, longitude,
+                            loc_type, pretty_name, description)
+    db.session.add(new_location)
+    db.session.commit()
+    return location_schema.jsonify(new_location)
+
+# Get all location
+@app.route('/api/location', methods=['GET'])
+def get_locations():
+    all_locations = Location.query.all()
+    result = locations_schema.dump(all_locations)
+    return jsonify(result)
+
+# Get Single Location
+@app.route('/api/location/<id>', methods=['GET'])
+def get_location(id):
+    location = Location.query.get_or_404(id)
+    return location_schema.jsonify(location)
+
+# Update Location
+@app.route('/api/location/<id>', methods=['PUT'])
+def update_location(id):
+    location = Location.query.get(id)
+    location.latitude = request.json['latitude']
+    location.longitude = request.json['longitude']
+    location.loc_type = request.json['loc_type']
+    location.pretty_name = request.json['pretty_name']
+    location.description = request.json['description']
+    db.session.commit()
+    return location_schema.jsonify(location)
+
+# Delete Location
+@app.route('/api/location/<id>', methods=['DELETE'])
+def delete_location(id):
+    location = Location.query.get(id)
+    db.session.delete(location)
+    db.session.commit()
+    return location_schema.jsonify(location)
 
 
 @app.errorhandler(InvalidUsage)
