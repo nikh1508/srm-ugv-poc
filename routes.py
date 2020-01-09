@@ -1,4 +1,4 @@
-from app import app
+from app import app, shared_data, ipc
 from flask import Flask, request, jsonify, Response, render_template
 import logging
 from db_models import *
@@ -100,6 +100,29 @@ def delete_location(id):
     db.session.delete(location)
     db.session.commit()
     return location_schema.jsonify(location)
+
+# Set Parameters
+@app.route('/api/set/<parameter>', methods=['POST'])
+def set_parameter(parameter):
+    if parameter == 'destination':
+        with ipc.lock:
+            shared_data['destination']['latitude'] = request.json['latitude']
+            shared_data['destination']['longitude'] = request.json['longitude']
+            ipc.send_data(shared_data)
+        return jsonify(shared_data)
+    elif parameter == 'velocity':
+        with ipc.lock:
+            shared_data['velocity'] = request.json['velocity']
+            ipc.send_data(shared_data)
+        return jsonify(shared_data)
+
+# Start/Stop Journey
+@app.route('/api/control/<signal>', methods=['GET'])
+def start_bot(signal):
+    if signal == 'start' or signal == 'stop':
+        shared_data['toggleSignal'] = signal
+        ipc.send_data(shared_data)
+        return '{} signal sent to the bot'.format(signal)
 
 
 @app.errorhandler(InvalidUsage)

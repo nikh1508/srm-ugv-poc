@@ -3,7 +3,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 import logging
-
+import pyipc
 #####   Logging   #####
 logging.basicConfig(filename='server.log', format='[%(levelname)-7s] : %(asctime)s : %(name)-8s : %(message)s',
                     level=logging.DEBUG, datefmt='%b %d, %g | %H:%M:%S')
@@ -11,10 +11,24 @@ log = logging.getLogger(__name__)
 
 
 #####   IPC   #####
+shared_data = {'gps': {'latitude': 0.0, 'longitude': 0.0, 'satellite': 0}, 'compass': 0.0,
+               'velocity': 0.0, 'destination': {'latitude': 0.0, 'longitude': 0.0}, 'toggleSignal': None}
+
+
+def ipc_handler(signal, frame):
+    global shared_data
+    shared_data = ipc.get_data()
+
+
 try:
     shared_file_path = os.environ['SHARED_FILE_PATH']
+    lock_file_path = os.environ['LOCK_FILE_PATH']
+    log.info('Path for shared file and lock file obtained')
+    ipc = pyipc.IPC('process-api', 'process-motion_control',
+                    shared_file_path, lock_file_path, ipc_handler)
+    ipc.connect()
 except KeyError:
-    log.error('Error obatining shared file path')
+    log.error('Error obatining shared or lock file path')
 
 
 #####   Flask App   #####
