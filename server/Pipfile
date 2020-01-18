@@ -11,6 +11,7 @@ flask-sqlalchemy = "*"
 flask-marshmallow = "*"
 marshmallow-sqlalchemy = "*"
 filelock = "*"
+flask-cors = "*"
 
 [requires]
 python_version = "3.7"

@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 import logging
 import pyipc
+from flask_cors import CORS
 #####   Logging   #####
 logging.basicConfig(filename='server.log', format='[%(levelname)-7s] : %(asctime)s : %(name)-8s : %(message)s',
                     level=logging.DEBUG, datefmt='%b %d, %g | %H:%M:%S')
@@ -28,11 +29,13 @@ try:
                     shared_file_path, lock_file_path, ipc_handler)
     ipc.connect()
 except KeyError:
+    print('Error : Unable to obtain SHARED_FILE_PATH or LOCK_FILE_PATH in environment variables')
     log.error('Error obatining shared or lock file path')
 
 
 #####   Flask App   #####
 app = Flask(__name__)
+CORS(app)
 app.config.from_pyfile('config.py')
 
 #####   Database   #####
