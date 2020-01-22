@@ -1,23 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
+
+<head>
+    <meta charset = "utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <link rel="stylesheet" type="text/css" href="/static/style.css" />
+    <link 
+        href="https://fonts.googleapis.com/css?family=Alata|Archivo|Noto+Sans+SC|Ubuntu&display=swap" 
+        rel="stylesheet"
+    /> 
     <script
       type="text/javascript"
-      src="{{ url_for('static', filename='main.js') }}"
+      src="{{ url_for('static', filename='index.js') }}"
     ></script>
-    <link
-      href="https://fonts.googleapis.com/css?family=Cousine&display=swap"
-      rel="stylesheet"
-    />
+    
+    
     <title>SRM UGV | Dashboard</title>
-  </head>
-  <body>
-    <div class="container">
-      <h1>Client Side</h1>
+    <div class="header">
+        <h class="head">D A V E</h>
     </div>
-  </body>
+</head>
+
+<body>
+    <div class = "column-layout">
+        <div class = "left-column">
+            <div id="map"></div>
+            <div class = "sensor_head">Sensor Data :</div>
+            <div class = "container-1">
+                <div class="left-column_c1">
+                    <div class = "lat_inp">Current Latitude:</div>
+                    <div class = "lat_inp">Current Longitude:</div>
+                    <div class = "lat_inp">Compass Heading:</div>
+                    <div class = "sat_no">No. of Satellites:</div>
+                </div> 
+                <div class="right-column_c1">
+                    <div id = "latitude_input" type="text">Nothing To Display yet</div>
+                    <div id = "longitude_input" type="text">Nothing to Display yet</div>
+                    <div id = "compass_input" type="text">Nothing to Display yet</div>
+                    <div id = "sat_count" type="text">Nothing to Display yet</div>
+                </div>
+            
+            </div>
+        </div> 
+        
+        
+        
+        <div class="main-column">
+            <form id="Dest">
+                <h3>Enter Destination:</h3>
+                <div id = "Lat">
+                    <h4>Latitude:</h4>
+                    <input type ="text" id = "lat">
+                </div>
+                
+                <div id = "Long">
+                    Longitude:
+                    <input type ="text" id = "long"><br>
+                </div>
+                
+                <div id = "Velo">
+                    Enter velocity:<br>   
+                    <input type ="text" id = "velocity"><br>
+                </div>
+            </form>
+            <div class="container-buttons">
+                <button id="starting">Start</button>
+                <button id="stopping">Stop</button> 
+            </div>          
+        </div>
+
+        <div class="right-column">
+            <h3>End : </h3>
+            <select id="end">
+                <option value="0">Tech Park, SRMIST</option>
+                <option value="1">Bio-Tech Block, SRMIST</option>
+                <option value="2">Architectural Block, SRMIST</option>
+                <option value="3">Modi Bhavan</option>
+                <option value="4">Modi Bhavan</option>
+            </select>
+        </div>
+
+    </div>
+
+    
+    <script async defer
+        src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDob0co6AQ49m2zvadKD6vYOoQqgX2XmEs&callback=initMap">
+    </script>
+    
+
+</body>
+
 </html>

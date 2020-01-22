@@ -1,16 +1,160 @@
-* {
-  font-family: "Cousine", monospace;
+
+h.head
+{
+    color: white;
+    font-family: 'Archivo', sans-serif;
+    font-size: 30px;
+    padding-left: 50px;
+}
+.header {
+    height: 60px;
+    overflow: hidden;
+    background-color: #0a091e;
+    padding-top: 25px;   
 }
 
-body {
-  background-color: #ff5252;
-  color: whitesmoke;
-  font-size: 3em;
+
+
+body
+{
+    background-color: #ffffff;
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
-.container {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+
+#map 
+{
+    width: 800px;
+    height: 500px;
+}
+
+.column-layout
+{
+    max-width: 1800px;
+    background-color: #FFF;
+    margin: 40px auto 0 auto;
+    line-height: 1.65;
+    padding: 20px 50px;
+    display: flex;
+}
+
+.main-column
+{
+    flex: 1;
+    padding : 80px;
+}
+
+.left-column
+{
+    flex: 1;
+    padding : 35px;
+    /* padding-right: 100px; */
+}
+
+.right-column
+{
+    flex: 1;
+    padding : 30px;
+}
+
+.container
+{
+    max-width: 1300px;
+    background-color: #FFF;
+    margin: 20px auto 0 auto;
+    line-height: 1.65;
+    padding: 20px;
+    display: flex;
+}
+
+.left-column_r1
+{
+    flex: 1;
+    padding : 30px;
+}
+
+.right-column_r1
+{
+    flex: 1;
+    padding : 30px;
+}
+
+.container-1
+{
+    font-family: 'Archivo', sans-serif;;
+    max-width: 1400px;
+    background-color: #FFF;
+    margin: 40px auto 0 auto;
+    line-height: 1.65;
+    padding-bottom: 50px;
+    display: flex;
+}
+
+.sensor_head
+{
+    font-size: 25px;
+}
+.left-column_c1
+{
+    flex: 1;
+    padding-top: 0px;
+    font-size: 20px;
+}
+
+.right-column_c1
+{
+    flex: 1;
+    padding-top: 0px;
+    font-size: 20px;
+}
+
+
+input[type=text] 
+{
+    width: 100%;
+    box-sizing: border-box;
+    border: 2.5px solid black;
+    border-radius: 4px;
+}
+
+.button
+{
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+#start
+{
+    font-family: 'Archivo', sans-serif;
+    color: white;
+    background:#2E76CF;
+    font-size: 35px;
+    border-radius: 8px;
+    
+}
+#start:hover{
+    background: #0e1070;
+}
+#stop
+{
+    font-family:'Archivo', sans-serif;
+    color: white;
+    background:#cf2e2e;
+    font-size: 35px;
+    border-radius: 8px;
+}
+
+#stop:hover
+{
+    background: #901e1e;
+}
+
+.container-buttons
+{
+    padding: 30px;
 }
