@@ -84,7 +84,7 @@ class IPC(_threading.Thread):
 
     def send_data(self, data):
         if self.__is_connected:
-            with self.__lock:
+            with self.lock:
                 open(self.__shared_file_path, 'w').write(_json.dumps(data, indent=3, sort_keys=True))
             self.__trigger_signal()
         else:
@@ -92,6 +92,6 @@ class IPC(_threading.Thread):
                 'Cannot send new data since the process is disconnected', 'error')
 
     def get_data(self):
-        with self.__lock:
+        with self.lock:
             data = _json.loads(open(self.__shared_file_path, 'r').read())
         return data
