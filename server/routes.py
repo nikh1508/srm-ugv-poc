@@ -109,6 +109,7 @@ def set_parameter(parameter):
             shared_data['destination']['latitude'] = request.json['latitude']
             shared_data['destination']['longitude'] = request.json['longitude']
             ipc.send_data(shared_data)
+            print("RECVD::", request.json['latitude'], request.json['longitude'])
         return jsonify(shared_data)
     elif parameter == 'velocity':
         with ipc.lock:

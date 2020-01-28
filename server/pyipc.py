@@ -61,7 +61,7 @@ class IPC(_threading.Thread):
             while self.__other_process_pid < 0:
                 self.__other_process_pid = self.get_pid(
                     self.__other_process_name)
-                _time.sleep(.1)
+                _time.sleep(5)
             self.__debug_msg('Obtained PID of {}'.format(
                 self.__other_process_name))
             self.__is_connected = True

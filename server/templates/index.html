@@ -2,20 +2,16 @@
 <html lang="en">
 
 <head>
-    <meta charset = "utf-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <link rel="stylesheet" type="text/css" href="/static/style.css" />
-    <link 
-        href="https://fonts.googleapis.com/css?family=Alata|Archivo|Noto+Sans+SC|Ubuntu&display=swap" 
-        rel="stylesheet"
-    /> 
-    <script
-      type="text/javascript"
-      src="{{ url_for('static', filename='index.js') }}"
-    ></script>
-    
-    
+    <link href="https://fonts.googleapis.com/css?family=Alata|Archivo|Noto+Sans+SC|Ubuntu&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="{{ url_for('static', filename='index.js') }}"></script>
+
+
     <title>SRM UGV | Dashboard</title>
     <div class="header">
         <h class="head">D A V E</h>
@@ -23,71 +19,95 @@
 </head>
 
 <body>
-    <div class = "column-layout">
-        <div class = "left-column">
+    <div class="column-layout">
+        <div class="left-column">
             <div id="map"></div>
-            <div class = "sensor_head">Sensor Data :</div>
-            <div class = "container-1">
-                <div class="left-column_c1">
-                    <div class = "lat_inp">Current Latitude:</div>
-                    <div class = "lat_inp">Current Longitude:</div>
-                    <div class = "lat_inp">Compass Heading:</div>
-                    <div class = "sat_no">No. of Satellites:</div>
-                </div> 
-                <div class="right-column_c1">
-                    <div id = "latitude_input" type="text">Nothing To Display yet</div>
-                    <div id = "longitude_input" type="text">Nothing to Display yet</div>
-                    <div id = "compass_input" type="text">Nothing to Display yet</div>
-                    <div id = "sat_count" type="text">Nothing to Display yet</div>
+            <br><br>
+            <div class="bottom-panel">
+                <img id="webcam-stream" style="float:left" width=400>
+                <div class="sensor-panel">
+                    <div class="sensor_head">Sensor Data</div>
+                    <div id="1">
+                        <font style="float:left;">Latitude&emsp;&ensp;&ensp;: :</font>
+                        <div id="sensor-latitude" style="float:right;padding-left: 80px;"> NULL</div>
+                    </div>
+                    <div id="2">
+                        <font style="float:left;">Longitude &ensp;&ensp;: :</font>
+                        <div id="sensor-longitude" style="float:right;padding-left: 80px;"> NULL</div>
+                    </div>
+                    <div>
+                        <font style="float:left;">Satellites &emsp;&ensp;: :</font>
+                        <div id="sensor-sats" style="float:right;padding-left: 80px;"> NULL</div>
+                    </div>
+                    <div>
+                        <font style="float:left;">Heading&emsp;&emsp;: :</font>
+                        <div id="sensor-heading" style="float:right;padding-left: 80px;"> NULL</div>
+                    </div>
                 </div>
-            
             </div>
-        </div> 
-        
-        
-        
+        </div>
+
+
+
         <div class="main-column">
-            <form id="Dest">
-                <h3>Enter Destination:</h3>
-                <div id = "Lat">
-                    <h4>Latitude:</h4>
-                    <input type ="text" id = "lat">
+            <form id="dest">
+                <h2>Enter Destination:</h2>
+                <div id="Lat" style="padding:16px">
+                    Latitude
+                    <input type="text" id="lat" style="font-size:18px;float:right;">
                 </div>
-                
-                <div id = "Long">
-                    Longitude:
-                    <input type ="text" id = "long"><br>
+
+                <div id="Long" style="padding:16px">
+                    Longitude
+                    <input type="text" id="long" style="font-size:18px;float:right;"><br>
                 </div>
-                
-                <div id = "Velo">
-                    Enter velocity:<br>   
-                    <input type ="text" id = "velocity"><br>
+
+                <div id="Velo" style="padding:16px">
+                    Enter velocity
+                    <input type="text" id="velocity" style="font-size:18px;float:right;">
                 </div>
             </form>
             <div class="container-buttons">
-                <button id="starting">Start</button>
-                <button id="stopping">Stop</button> 
-            </div>          
+                <button id="set-dest-button" style="background-color:#0097A7;" onclick="setDestAndVelocity()">SET
+                    DEST</button>
+                <button id="start-button" style="background-color:#388E3C;">START</button>
+                <button id="stop-button" style="background-color:#f44336;">STOP</button>
+            </div>
         </div>
 
         <div class="right-column">
-            <h3>End : </h3>
-            <select id="end">
-                <option value="0">Tech Park, SRMIST</option>
-                <option value="1">Bio-Tech Block, SRMIST</option>
-                <option value="2">Architectural Block, SRMIST</option>
-                <option value="3">Modi Bhavan</option>
-                <option value="4">Modi Bhavan</option>
+            <h2>Saved Destinations </h2>
+            <select id="end" style="margin-left:10px;width:55%" onchange="selectLocation()">
             </select>
+            <div class="add-location-panel">
+                <div>
+                    <h2 style="float:left">Add Location</h2>
+                    <button id="current-location" onclick="pasteCurrentLocation()"><img
+                            src="/static/current-location.png" height=20px></button>
+                </div>
+                <form id="new-location">
+                    <input type="text" id="new-loc-lat" placeholder="Latitude">
+                    <input type="text" id="new-loc-lng" placeholder="Longitude">
+                    <input type="text" id="new-loc-pname" placeholder="Pretty Name">
+                    <input type="text" id="new-loc-desc" placeholder="Description">
+                    <select id="new-loc-type">
+                        <option value="WAYPOINT">Waypoint</option>
+                        <option value="JUNCTION">Junction</option>
+                        <option value="DESTINATION">Destination</option>
+                    </select>
+                </form>
+                <button style="margin-left:20%; margin-top:5%; background-color:#00796B" onclick="addNewLocation()">ADD
+                    </buttosn>
+            </div>
         </div>
 
     </div>
 
-    
+
     <script async defer
-        src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDob0co6AQ49m2zvadKD6vYOoQqgX2XmEs&callback=initMap">
-    </script>
-    
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDob0co6AQ49m2zvadKD6vYOoQqgX2XmEs&callback=initMap">
+        </script>
+
 
 </body>
 
