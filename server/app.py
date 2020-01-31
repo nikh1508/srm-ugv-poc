@@ -5,6 +5,8 @@ from flask_marshmallow import Marshmallow
 import logging
 import pyipc
 from flask_cors import CORS
+import setproctitle
+
 #####   Logging   #####
 logging.basicConfig(filename='server.log', format='[%(levelname)-7s] : %(asctime)s : %(name)-8s : %(message)s',
                     level=logging.DEBUG, datefmt='%b %d, %g | %H:%M:%S')
@@ -12,11 +14,13 @@ log = logging.getLogger(__name__)
 
 
 #####   IPC   #####
+setproctitle.setproctitle('process-api')
 shared_data = {'gps': {'latitude': 0.0, 'longitude': 0.0, 'satellite': 0}, 'compass': 0.0,
                'velocity': 0.0, 'destination': {'latitude': 0.0, 'longitude': 0.0}, 'toggleSignal': None}
 
 
 def ipc_handler(signal, frame):
+    print('new-data')
     global shared_data
     shared_data = ipc.get_data()
 

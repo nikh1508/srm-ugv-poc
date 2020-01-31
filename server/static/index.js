@@ -19,8 +19,10 @@ var Location = function (latitude, longitude, pretty_name, description, type) {
 
 function initMap() {
     Robocon_lab = new google.maps.LatLng(12.823, 80.043);
+    var map_style = JSON.parse(httpGet('/static/mapStyle.json'));
     var mapOptions = {
         zoom: 19,
+        styles: map_style,
         center: Robocon_lab
     }
     directionService = new google.maps.DirectionsService;
