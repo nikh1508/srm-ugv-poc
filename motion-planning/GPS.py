@@ -22,7 +22,9 @@ class GPS(threading.Thread):
             ch = self.gps_serial.read()
             try:                    
                 ch = ch.decode()
-                ret = gps.update(ch)
+                ret = None
+                if ch != '':
+                    ret = gps.update(ch)
                 if ret != None:
                     self.update_values()
             except:

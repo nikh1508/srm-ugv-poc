@@ -15,14 +15,16 @@ log = logging.getLogger(__name__)
 
 #####   IPC   #####
 setproctitle.setproctitle('process-api')
-shared_data = {'gps': {'latitude': 0.0, 'longitude': 0.0, 'satellite': 0}, 'compass': 0.0,
-               'velocity': 0.0, 'destination': {'latitude': 0.0, 'longitude': 0.0}, 'toggleSignal': None}
+shared_data = {'gps': {'latitude': None, 'longitude': None, 'satellite': None}, 'compass': {'heading': None},
+               'velocity': 0.0, 'destination': {'latitude': None, 'longitude': None}, 'toggleSignal': None}
 
 
 def ipc_handler(signal, frame):
-    print('new-data')
+    # print('new-data')
     global shared_data
+    # print('before', shared_data)
     shared_data = ipc.get_data()
+    # print('after', shared_data)
 
 
 try:
@@ -36,7 +38,11 @@ except KeyError:
     print('Error : Unable to obtain SHARED_FILE_PATH or LOCK_FILE_PATH in environment variables')
     log.error('Error obatining shared or lock file path')
 
-
+#########################
+def get_shared_data():
+    global shared_data
+    return shared_data
+    
 #####   Flask App   #####
 app = Flask(__name__)
 CORS(app)

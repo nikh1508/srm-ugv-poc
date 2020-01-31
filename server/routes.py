@@ -6,7 +6,7 @@ from db_models import *
 log = logging.getLogger(__name__)
 #
 # Sample Data for Developement:
-loc = {'lat': 12.60789, 'lng': 80.77654, 'sat': 14}
+loc = {'lat': 12.823501, 'lng': 80.043526, 'sat': 14}
 compass = {'heading': 35}
 suggestions = {'suggestions': ['option1', 'option2', 'option3']}
 #
@@ -35,12 +35,15 @@ class InvalidUsage(Exception):
 # Get Sensor Data
 @app.route('/api/sensor-data', methods=['GET'])
 def sensorData():
+    shared_data = ipc.get_data() 
+    # print(data)
     log.info('Sensor data requested.')
     sensor = request.args.get('sensor')
+    # print(shared_data)
     if sensor == 'gps':
-        return jsonify(loc)
+        return jsonify({'lat':shared_data['gps']['latitude'], 'lng':shared_data['gps']['longitude'], 'sat':shared_data['gps']['satellite']})
     elif sensor == 'compass':
-        return jsonify(compass)
+        return jsonify({'heading': "{0:.2f}".format(shared_data['compass']['heading'])})
 
 # Search Suggestions
 @app.route('/api/search', methods=['GET'])

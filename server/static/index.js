@@ -6,7 +6,7 @@ var Robocon_lab;
 var all_locations = null;
 var location_now = { latitude: null, longitude: null };
 var bounds = null;
-var myVar; 
+var bot_path = null;
 
 window.addEventListener('load', loadComponents);
 
@@ -23,8 +23,11 @@ function initMap() {
     Robocon_lab = new google.maps.LatLng(12.823, 80.043);
     var map_style = JSON.parse(httpGet('/static/mapStyle.json'));
     var mapOptions = {
-        zoom: 19,
-        styles: map_style,
+        zoom: 14,
+        fullscreenControl: false,
+        mapTypeControl: false,
+        streetViewControl: false,
+        // styles: map_style,
         center: Robocon_lab
     }
     directionService = new google.maps.DirectionsService;
@@ -34,7 +37,7 @@ function initMap() {
     directionRenderer.setMap(map);
 
     live_loc_marker = new google.maps.Marker({
-        position: Robocon_lab,
+        position: null,
         map: map,
         icon: '/static/blue-dot.png',
         title: 'Live Location'
@@ -44,20 +47,24 @@ function initMap() {
         map: map,
         title: "Destination"
     });
+    bot_path = new google.maps.Polyline({
+        path: null,
+        geodesic: true,
+        strokeColor: '#FF0000',
+        strokeOpacity: 1.0,
+        strokeWeight: 2
+    });
+
     var updater = function () {
         var data = new google.maps.LatLng(document.getElementById('lat').value, document.getElementById('long').value);
         calcRoute(directionService, directionRenderer, data);
         google.maps.event.trigger(map, 'resize');
     };
-    // var data = new google.maps.LatLng(document.getElementById('lat').value,document.getElementById('long').value);
-    document.getElementById('start-button').addEventListener('click', updater);
-    // setInterval(loadComponents(), 1000);
-    
-    
+    var data = new google.maps.LatLng(document.getElementById('lat').value, document.getElementById('long').value);
+    // document.getElementById('start-button').addEventListener('click', updater);
 }
 
 function calcRoute(directionService, directionRenderer, data) {
-    // console.log("hi");
     var Robocon_lab = new google.maps.LatLng(12.823, 80.043);
     directionService.route({
         origin: Robocon_lab,
@@ -91,12 +98,14 @@ function httpPOST(theUrl, json) {
 
 function updateSensorReadings() {
     var response = JSON.parse(httpGet('./api/sensor-data?sensor=gps'));
-    document.getElementById('sensor-latitude').textContent = response.lat;
-    document.getElementById('sensor-longitude').textContent = response.lng;
+    // console.log(response)
+    document.getElementById('sensor-latitude').textContent = ((response.lat != null) ? response.lat : 'No Fix');
+    document.getElementById('sensor-longitude').textContent = ((response.lng != null) ? response.lng : 'No Fix');
     location_now.latitude = response.lat;
     location_now.longitude = response.lng;
-    document.getElementById('sensor-sats').textContent = response.sat;
-    document.getElementById('sensor-heading').textContent = JSON.parse(httpGet('./api/sensor-data?sensor=compass')).heading;
+    document.getElementById('sensor-sats').textContent = ((response.sat != null) ? response.sat : 'No Fix');
+    var heading = JSON.parse(httpGet('./api/sensor-data?sensor=compass')).heading;
+    document.getElementById('sensor-heading').textContent = (heading != null) ? heading : 'Null';
 }
 function updateDropList() {
     var sel = document.getElementById('end');
@@ -175,14 +184,45 @@ function selectLocation() {
     document.getElementById('long').value = all_locations[i].longitude;
 }
 
+function animateMapZoomTo(map, targetZoom) {
+    var currentZoom = arguments[2] || map.getZoom();
+    if (currentZoom != targetZoom) {
+        google.maps.event.addListenerOnce(map, 'zoom_changed', function (event) {
+            animateMapZoomTo(map, targetZoom, currentZoom + (targetZoom > currentZoom ? 1 : -1));
+        });
+        setTimeout(function () { map.setZoom(currentZoom) }, 120);
+    }
+}
+
+function updateMap(draw_path = false, path = null) {
+    if (live_loc_marker.position == null && location_now.latitude != null) {
+        live_loc_marker.setPosition({ lat: location_now.latitude, lng: location_now.longitude });
+        map.setCenter(live_loc_marker.position);
+        animateMapZoomTo(map, 19);
+    }
+    else if (location_now.latitude != null)
+        live_loc_marker.setPosition({ lat: location_now.latitude, lng: location_now.longitude });
+    // if (draw_path && bot.path == null) {
+    //     bot_path.path = path;
+    //     bot_path.setMap(map);
+    // }
+    // else if (draw_path) {
+
+    // }
+}
+function switchBot(power) {
+    var uri = './api/control/' + ((power) ? 'start' : 'stop');
+    response = httpGet(uri);
+    console.log(response);
+}
+
 function loadComponents() {
     document.getElementById("webcam-stream").src = window.location.origin + ':8081';
-    setInterval(function(){
-        updateSensorReadings(); 
+    fetchAllLocations();
+    updateDropList();
+    setInterval(function () {
         updateSensorReadings();
-        fetchAllLocations();
-        updateDropList();
-        // printer();
-    }, 1000)
+        updateMap();
+    }, 1000);
 }
 
