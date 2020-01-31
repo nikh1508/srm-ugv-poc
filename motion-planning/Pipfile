@@ -8,6 +8,10 @@ verify_ssl = true
 [packages]
 micropygps = {git = "https://github.com/inmcm/micropyGPS.git"}
 pyserial = "*"
+filelock = "*"
+setproctitle = "*"
+websockets = "*"
+geopy = "*"
 
 [requires]
 python_version = "3.7"

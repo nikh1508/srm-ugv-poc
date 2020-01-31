@@ -61,9 +61,9 @@ class IPC(_threading.Thread):
             while self.__other_process_pid < 0:
                 self.__other_process_pid = self.get_pid(
                     self.__other_process_name)
-                _time.sleep(.1)
-            self.__debug_msg('Obtained PID of {}'.format(
-                self.__other_process_name))
+                _time.sleep(5)
+            self.__debug_msg('Obtained PID of {} with PID-{}'.format(
+                self.__other_process_name, self.__other_process_pid))
             self.__is_connected = True
             while self.__is_connected:
                 _time.sleep(2)
@@ -76,7 +76,7 @@ class IPC(_threading.Thread):
     def __trigger_signal(self):
         try:
             output = _check_output(
-                ['kill', '-30', str(self.__other_process_pid)]).decode()
+                ['kill', '-10', str(self.__other_process_pid)]).decode()
         except Exception as e:
             self.__is_connected = False
             self.__debug_msg('Disconnected from {}. Error: {}'.format(

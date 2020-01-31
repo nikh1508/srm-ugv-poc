@@ -1,9 +1,7 @@
 from micropyGPS import MicropyGPS
-import serial
 import threading
 import pyipc
 
-gps_serial = serial.Serial('/dev/ttyAMA0')
 gps = MicropyGPS()
 
 class GPS(threading.Thread):
@@ -16,12 +14,12 @@ class GPS(threading.Thread):
     speed = gps.speed
     time_since_fix = gps.time_since_fix()
 
-    def __init__(self):
+    def __init__(self, serial):
         threading.Thread.__init__(self)
-
+        self.gps_serial = serial
     def run(self):
         while True:
-            ch = gps_serial.read()
+            ch = self.gps_serial.read()
             try:                    
                 ch = ch.decode()
                 ret = gps.update(ch)
