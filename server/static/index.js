@@ -6,8 +6,10 @@ var Robocon_lab;
 var all_locations = null;
 var location_now = { latitude: null, longitude: null };
 var bounds = null;
+var myVar; 
 
 window.addEventListener('load', loadComponents);
+
 
 var Location = function (latitude, longitude, pretty_name, description, type) {
     this.latitude = latitude;
@@ -49,6 +51,9 @@ function initMap() {
     };
     // var data = new google.maps.LatLng(document.getElementById('lat').value,document.getElementById('long').value);
     document.getElementById('start-button').addEventListener('click', updater);
+    // setInterval(loadComponents(), 1000);
+    
+    
 }
 
 function calcRoute(directionService, directionRenderer, data) {
@@ -172,7 +177,12 @@ function selectLocation() {
 
 function loadComponents() {
     document.getElementById("webcam-stream").src = window.location.origin + ':8081';
-    updateSensorReadings();
-    fetchAllLocations();
-    updateDropList();
+    setInterval(function(){
+        updateSensorReadings(); 
+        updateSensorReadings();
+        fetchAllLocations();
+        updateDropList();
+        // printer();
+    }, 1000)
 }
+
